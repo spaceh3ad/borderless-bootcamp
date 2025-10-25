@@ -1,0 +1,37 @@
+{
+  "merkleRoot": "0x966a116134c0daa752572297292124fb903a8fa852cab362675a6721eafb0c87",
+  "whiteList": [
+    {
+      "address": "0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e",
+      "amount": "100000000",
+      "refClaimUUID": "0xabc1230000000000000000000000000000000000000000000000000000000001",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "leaf": "0x35c7beb2a5c1f2d42b4df31e2657bfac646c875b77f085146820f08563690cf1",
+      "proof": [
+        "0x59493282d16742ccb02c832c21defe4008ab4749ed32b0e948aab5515a153b3c",
+        "0xb7277a2009c4afc262e42323e26a4aae0f0a2f52f8911e9476ac1b59ebcb7ac1"
+      ]
+    },
+    {
+      "address": "0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e",
+      "amount": "50000000",
+      "refClaimUUID": "0xabc1240000000000000000000000000000000000000000000000000000000002",
+      "asset": "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913",
+      "leaf": "0x59493282d16742ccb02c832c21defe4008ab4749ed32b0e948aab5515a153b3c",
+      "proof": [
+        "0x35c7beb2a5c1f2d42b4df31e2657bfac646c875b77f085146820f08563690cf1",
+        "0xb7277a2009c4afc262e42323e26a4aae0f0a2f52f8911e9476ac1b59ebcb7ac1"
+      ]
+    },
+    {
+      "address": "0x1D96F2f6BeF1202E4Ce1Ff6Dad0c2CB002861d3e",
+      "amount": "75000000",
+      "refClaimUUID": "0xabc1250000000000000000000000000000000000000000000000000000000003",
+      "asset": "0x2282c726f54c93193e6b8e5bf1b82303dc11d36e",
+      "leaf": "0xb7277a2009c4afc262e42323e26a4aae0f0a2f52f8911e9476ac1b59ebcb7ac1",
+      "proof": [
+        "0x114678ca6977310cb7a5ddcc9703d1f8a213b4b746060c111e59c06d147af199"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+TokenTest:test_supplyShouldBeMintedToOwner() (gas: 13736)
+TokenTest:test_transfer() (gas: 47163)
