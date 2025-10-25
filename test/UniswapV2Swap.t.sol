@@ -14,15 +14,25 @@ contract ForkTest is Test {
     address weth = 0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2;
     address dai = 0x6B175474E89094C44Da98b954EedeAC495271d0F;
 
+    address bob;
+    address alice;
+
+    uint256 public amountBob = 100_000 ether;
+    uint256 public amountAlice = 100_000 ether;
+
     UniswapV2Router02 uniswapRouter =
         UniswapV2Router02(payable(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D));
 
     function setUp() public {
-        vm.createSelectFork("https://eth.llamarpc.com"); // Ethereum Mainnet RPC
+        vm.createSelectFork("https://eth.blockrazor.xyz"); // Ethereum Mainnet RPC
 
         swapper = new Swapper();
 
-        deal(dai, address(this), 100 ether); // give 100 DAI
+        bob = makeAddr("Bob");
+        alice = makeAddr("Alice");
+
+        // deal(dai, address(bob), amountBob); // give 100 DAI
+        deal(dai, address(alice), amountAlice); // give 100 DAI
     }
 
     function test_swapSingleHop() public {
@@ -48,5 +58,78 @@ contract ForkTest is Test {
             block.timestamp + 30
         );
         // implement me
+    }
+
+    function _swap(
+        uint256 amountIn,
+        uint256 amountOut,
+        address[] memory path,
+        address recipient
+    ) internal returns (uint256[] memory) {
+        IERC20(path[0]).approve(address(uniswapRouter), amountIn);
+        return
+            uniswapRouter.swapExactTokensForTokens(
+                amountIn,
+                amountOut,
+                path,
+                recipient,
+                block.timestamp + 30
+            );
+    }
+
+    function test_howSlippageWorks() public {
+        address[] memory path = new address[](2);
+        path[0] = dai;
+        path[1] = weth;
+
+        // uint256 amountIn = 5000 ether;
+        // uint256[] memory amountsOut = uniswapRouter.getAmountsOut(
+        //     amountIn,
+        //     path
+        // );
+
+        // 0%
+        // console.log("expected amount out for 10_000 DAI:", amountsOut[1]);
+        uint256[] memory amountsOut = uniswapRouter.getAmountsOut(
+            amountAlice,
+            path
+        );
+
+        vm.startPrank(bob);
+        uint256[] memory swapResult = _swap(
+            amountBob,
+            0,
+            // amountsOut[1],
+            path,
+            bob
+        );
+        vm.stopPrank();
+
+        // console.log(
+        //     "recevied by alice amount out for 10_000 DAI:",
+        //     amountsOut[1]
+        // );
+
+        uint256 aliceSlippage = 3;
+        uint256 slippageDenominator = 100;
+
+        uint256 minAmountOut = (amountsOut[1] *
+            (slippageDenominator - aliceSlippage)) / slippageDenominator;
+
+        vm.startPrank(alice);
+        _swap(amountAlice, minAmountOut, path, alice);
+        vm.stopPrank();
+
+        vm.startPrank(bob);
+        // swap the path
+        path[0] = weth;
+        path[1] = dai;
+        swapResult = _swap(swapResult[1], 0, path, bob);
+        vm.stopPrank();
+
+        console.log(
+            "Bob received back DAI after swapping WETH:",
+            swapResult[1]
+        );
     }
 }
