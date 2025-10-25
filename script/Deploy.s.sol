@@ -11,7 +11,7 @@ contract Deploy is Script {
     function run() external {
         vm.startBroadcast();
 
-        new Token();
+        new Token("MyToken", "MTK");
         new ERC721Token();
         new ERC1155Token();
 

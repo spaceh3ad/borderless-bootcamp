@@ -22,7 +22,7 @@ contract EIP7702Test is Test {
         (bob, bobPrivateKey) = makeAddrAndKey("bob");
 
         vm.prank(bob);
-        linkToken = new Token();
+        linkToken = new Token("LinkToken", "LINK");
 
         alice = makeAddr("alice");
         eve = makeAddr("eve");

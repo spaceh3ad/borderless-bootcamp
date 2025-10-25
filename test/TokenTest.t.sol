@@ -17,7 +17,7 @@ contract TokenTest is Test {
         (deployer, deployerPrivateKey) = makeAddrAndKey("deployer");
 
         vm.prank(deployer);
-        token = new Token();
+        token = new Token("MyToken", "MTK");
 
         tokenHandler = new TokenHandler();
 
