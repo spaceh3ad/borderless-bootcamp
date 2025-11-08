@@ -22,23 +22,26 @@ contract ArbitraryCall {
         // increase
     }
 
-    modifier nonReentrant() {
-        uint256 guard = 1;
-        require(guard == 1, "Reentrant call");
-        guard = 2;
-        _;
-        guard = 1;
-    }
-
-    function withdraw() external nonReentrant {
+    function withdraw() external {
         // CEI pattern VIOLATION
         // CHECK
         // EFFECT
         // INTERACTIONS
         uint256 amount = stakes[msg.sender];
         require(amount > 0, "No stake to withdraw");
-        vault.withdraw(payable(msg.sender));
+        vault.withdraw(payable(msg.sender), amount);
         stakes[msg.sender] = 0;
+    }
+
+    function withdrawSecure() external {
+        // CHECK
+        uint256 amount = stakes[msg.sender];
+        require(amount > 0, "No stake to withdraw");
+        // state modification before external call
+        // EFFECT
+        stakes[msg.sender] = 0;
+        // INTERACTIONS
+        vault.withdraw(payable(msg.sender), amount);
     }
 
     // function depositAndStke() external payable {
@@ -57,7 +60,7 @@ contract ArbitraryCall {
 
     function executeWithdraw(address payable to) external {
         require(msg.sender == owner, "Not owner");
-        vault.withdraw(to);
+        vault.withdraw(to, address(vault).balance);
     }
 
     //// more logic ////
@@ -70,9 +73,9 @@ contract Vault {
         owner = msg.sender;
     }
 
-    function withdraw(address payable to) external {
+    function withdraw(address payable to, uint256 amount) external {
         require(msg.sender == owner, "Not owner");
-        to.call{value: address(this).balance}(""); // forward all gas, vulnerable
+        to.call{value: amount}(""); // forward all gas, vulnerable
     }
 
     receive() external payable {}
@@ -155,7 +158,7 @@ contract Attacker {
     receive() external payable {
         console.log("reenterd");
 
-        if (address(arbitraryCall).balance >= 1 ether) {
+        if (address(arbitraryCall.vault()).balance >= 1 ether) {
             arbitraryCall.withdraw();
         }
     }
